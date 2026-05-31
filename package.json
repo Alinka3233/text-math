@@ -1,19 +1,14 @@
 {
   "name": "calculus-quiz-app",
   "version": "1.0.0",
-  "description": "微积分出题软件 - 山东大专微积分简明教程",
-  "main": "server.js",
+  "description": "微积分出题软件 - 静态纯前端版本",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "build:android": "npx cap sync android"
   },
   "dependencies": {
     "@capacitor/android": "^8.3.4",
     "@capacitor/cli": "^8.3.4",
-    "@capacitor/core": "^8.3.4",
-    "axios": "^1.16.1",
-    "cors": "^2.8.6",
-    "express": "^4.22.2"
+    "@capacitor/core": "^8.3.4"
   },
   "keywords": [
     "calculus",
