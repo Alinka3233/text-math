@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#667eea">
+    <title>微积分出题软件</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- 引入 MathJax 渲染 LaTeX 数学公式 -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            svg: {
+                fontCache: 'global'
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>微积分出题</h1>
+                    <p class="subtitle">AI 智能联网生成</p>
+                </div>
+                <button id="settingsBtn" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.9rem; width: auto;">⚙️ AI 设置</button>
+            </div>
+        </header>
+
+        <div class="controls">
+            <div class="control-group">
+                <label for="topicInput">输入或选择题型</label>
+                <input type="text" id="topicInput" placeholder="例如：不定积分、泰勒展开..." list="topicList">
+                <datalist id="topicList">
+                    <option value="函数与极限">
+                    <option value="导数">
+                    <option value="导数的应用">
+                    <option value="不定积分">
+                    <option value="定积分">
+                    <option value="微分方程">
+                </datalist>
+            </div>
+            <div class="control-group" style="flex: 0.5;">
+                <label for="countInput">题目数量</label>
+                <input type="number" id="countInput" min="1" max="10" value="3" step="1">
+            </div>
+            <button id="generateBtn" class="btn btn-primary">✨ 联网生成题目</button>
+        </div>
+
+        <div id="questionsContainer" class="questions-container"></div>
+    </div>
+
+    <!-- AI 设置弹窗 -->
+    <div id="settingsModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>⚙️ AI 联网题库设置</h2>
+                <span class="close-btn" id="closeSettings">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 15px; font-size: 0.9rem; color: #666;">配置您自己的 AI API 密钥以从网络实时生成任意数学题目。兼容 OpenAI 格式（默认配置为科大讯飞星火大模型）。</p>
+                <div class="control-group">
+                    <label>API Key</label>
+                    <input type="password" id="apiKeyInput" placeholder="f8f6d0752519adff511f15f9a1b684c7:MzVlOTZjYTBlZjM5MDMxNWE5MDY3NzJh">
+                </div>
+                <div class="control-group" style="margin-top: 10px;">
+                    <label>Base URL</label>
+                    <input type="text" id="baseUrlInput" placeholder="https://spark-api-open.xf-yun.com/v1">
+                </div>
+                <div class="control-group" style="margin-top: 10px;">
+                    <label>Model</label>
+                    <input type="text" id="modelInput" placeholder="generalv3.5">
+                </div>
+            </div>
+            <div class="modal-footer" style="margin-top: 20px; display: flex; gap: 10px; justify-content: flex-end;">
+                <button id="saveSettingsBtn" class="btn btn-primary" style="width: auto; margin: 0;">保存设置</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入应用逻辑 -->
+    <script src="app.js"></script>
+</body>
+</html>
