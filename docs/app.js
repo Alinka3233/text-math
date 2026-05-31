@@ -181,22 +181,33 @@ JSON 数组中每个对象必须且只能包含以下全英文键名：
   }
 ]`;
 
+        let url = `${config.baseUrl.replace(/\/+$/, '')}/chat/completions`;
+        let options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${config.apiKey}`
+            },
+            body: JSON.stringify({
+                model: config.model || 'generalv3.5',
+                messages: [{ role: 'user', content: prompt }]
+            })
+        };
+
         let response;
         try {
-            response = await fetch(`${config.baseUrl.replace(/\/+$/, '')}/chat/completions`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${config.apiKey}`
-                },
-                body: JSON.stringify({
-                    model: config.model || 'generalv3.5',
-                    messages: [{ role: 'user', content: prompt }]
-                })
-            });
+            // 首先尝试直接请求
+            response = await fetch(url, options);
         } catch (fetchError) {
-            console.error('Fetch 错误:', fetchError);
-            throw new Error('网络请求失败。可能是 CORS 跨域问题，请使用本地题库，或者尝试在 Android App 中使用 AI 功能。');
+            console.warn('直接请求失败，可能是跨域问题，尝试使用代理...', fetchError);
+            try {
+                // 如果直接请求失败（通常是CORS），尝试使用免费的CORS代理
+                const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
+                response = await fetch(proxyUrl, options);
+            } catch (proxyError) {
+                console.error('代理请求也失败:', proxyError);
+                throw new Error('网络请求失败。可能是 CORS 跨域问题，请使用本地题库，或者尝试在 Android App 中使用 AI 功能。');
+            }
         }
 
         if (!response.ok) {
