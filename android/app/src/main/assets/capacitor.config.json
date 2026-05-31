@@ -1,0 +1,10 @@
+{
+	"appId": "com.calculus.quiz",
+	"appName": "calculus-quiz-app",
+	"webDir": "public",
+	"plugins": {
+		"CapacitorHttp": {
+			"enabled": true
+		}
+	}
+}
