@@ -18,9 +18,9 @@ let usedQuestionIds = new Set();
 
 function getAiConfig() {
     return {
-        apiKey: localStorage.getItem('ai_api_key') || 'f8f6d0752519adff511f15f9a1b684c7:MzVlOTZjYTBlZjM5MDMxNWE5MDY3NzJh',
-        baseUrl: localStorage.getItem('ai_base_url') || 'https://spark-api-open.xf-yun.com/v1',
-        model: localStorage.getItem('ai_model') || 'generalv3.5'
+        apiKey: localStorage.getItem('ai_api_key') || 'sk-7yD7BPoJq7XcZPL3sixfkp6C4CH8uMq3tX0ZEWwH73KabREk',
+        baseUrl: localStorage.getItem('ai_base_url') || 'https://api520.pro/v1',
+        model: localStorage.getItem('ai_model') || '熊猫-2-gemini-3.1-flash-lite-preview'
     };
 }
 
@@ -189,7 +189,7 @@ JSON 数组中每个对象必须且只能包含以下全英文键名：
                 'Authorization': `Bearer ${config.apiKey}`
             },
             body: JSON.stringify({
-                model: config.model || 'generalv3.5',
+                model: config.model || '熊猫-2-gemini-3.1-flash-lite-preview',
                 messages: [{ role: 'user', content: prompt }]
             })
         };
