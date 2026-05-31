@@ -197,16 +197,52 @@ JSON 数组中每个对象必须且只能包含以下全英文键名：
         let response;
         try {
             // 首先尝试直接请求
-            response = await fetch(url, options);
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 15000); // 15秒超时
+            
+            response = await fetch(url, {
+                ...options,
+                signal: controller.signal
+            });
+            clearTimeout(timeoutId);
         } catch (fetchError) {
-            console.warn('直接请求失败，可能是跨域问题，尝试使用代理...', fetchError);
-            try {
-                // 如果直接请求失败（通常是CORS），尝试使用免费的CORS代理
-                const proxyUrl = 'https://corsproxy.io/?' + encodeURIComponent(url);
-                response = await fetch(proxyUrl, options);
-            } catch (proxyError) {
-                console.error('代理请求也失败:', proxyError);
-                throw new Error('网络请求失败。可能是 CORS 跨域问题，请使用本地题库，或者尝试在 Android App 中使用 AI 功能。');
+            console.warn('直接请求失败，可能是跨域或超时，尝试使用多个代理...', fetchError);
+            
+            // 定义多个代理源以增加成功率
+            const proxies = [
+                'https://corsproxy.io/?',
+                'https://api.allorigins.win/raw?url=',
+                'https://cors-anywhere.herokuapp.com/'
+            ];
+            
+            let proxySuccess = false;
+            
+            for (const proxyBase of proxies) {
+                try {
+                    const proxyUrl = proxyBase + encodeURIComponent(url);
+                    console.log(`尝试代理: ${proxyBase}`);
+                    
+                    const proxyController = new AbortController();
+                    const proxyTimeoutId = setTimeout(() => proxyController.abort(), 15000);
+                    
+                    response = await fetch(proxyUrl, {
+                        ...options,
+                        signal: proxyController.signal
+                    });
+                    
+                    clearTimeout(proxyTimeoutId);
+                    
+                    if (response.ok) {
+                        proxySuccess = true;
+                        break; // 成功则跳出循环
+                    }
+                } catch (e) {
+                    console.warn(`代理 ${proxyBase} 请求失败:`, e);
+                }
+            }
+            
+            if (!proxySuccess && (!response || !response.ok)) {
+                throw new Error('网络请求失败。可能是 CORS 跨域问题或网络超时。请优先使用本地题库，或在 Android App 中使用 AI 功能。');
             }
         }
 
